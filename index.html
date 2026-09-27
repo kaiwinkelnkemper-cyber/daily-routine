@@ -106,6 +106,17 @@ footer{margin-top:36px; font-size:12px; color:var(--ink-dim); text-align:left;}
 .backup-note{font-size:11px; color:var(--ink-dim); margin-top:8px;}
 .toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--gold-dim); color:#fff; padding:8px 16px; border-radius:6px; font-size:13px; opacity:0; transition:opacity .2s; pointer-events:none;}
 .toast.show{opacity:1;}
+.nav{display:flex; gap:24px; margin-bottom:28px;}
+.nav-btn{background:none; border:none; padding:0 0 8px; font-family:'Oswald',sans-serif; font-weight:600; font-size:14px; color:var(--ink-dim); cursor:pointer; border-bottom:2px solid transparent;}
+.nav-btn.active{color:var(--ink); border-bottom-color:var(--gold);}
+.view{display:none;}
+.view.active{display:block;}
+.routine-step{display:flex; gap:16px; padding:18px 0; border-bottom:1px solid var(--line);}
+.routine-step:last-child{border-bottom:none;}
+.routine-num{font-family:'Oswald',sans-serif; font-weight:700; font-size:20px; color:var(--gold); flex:0 0 28px;}
+.routine-body h3{font-size:15px; font-weight:600; margin:0 0 4px; font-family:'Inter',sans-serif;}
+.routine-dose{font-size:12px; color:var(--gold); margin-bottom:6px;}
+.routine-desc{font-size:13px; color:var(--ink-dim); line-height:1.5; margin:0;}
 </style>
 </head>
 <body>
@@ -116,6 +127,12 @@ footer{margin-top:36px; font-size:12px; color:var(--ink-dim); text-align:left;}
   </div>
   <h1>Vier Baustellen.<br>Ein Tracker.</h1>
 
+  <div class="nav">
+    <button class="nav-btn active" data-view="tracker">Tracker</button>
+    <button class="nav-btn" data-view="routine">Mobility-Routine</button>
+  </div>
+
+  <div class="view active" id="view-tracker">
   <div class="streak-row">
     <div class="streak-num" id="streakNum">0</div>
     <div class="streak-label">Tage<br>Serie</div>
@@ -154,6 +171,51 @@ footer{margin-top:36px; font-size:12px; color:var(--ink-dim); text-align:left;}
     <input type="file" id="importFile" accept="application/json" style="display:none;">
   </div>
   <div class="backup-note">Exportiert deinen kompletten Verlauf als Datei. Empfohlen alle paar Wochen, oder vor längerer Pause.</div>
+  </div>
+
+  <div class="view" id="view-routine">
+    <div class="item-sub" style="margin-bottom:8px;">Täglich, ca. 10-12 Minuten</div>
+    <div class="routine-step">
+      <div class="routine-num">1</div>
+      <div class="routine-body">
+        <h3>Wadenmobilisation</h3>
+        <div class="routine-dose">2 Min, pro Bein ca. 1 Min</div>
+        <p class="routine-desc">Faszienrolle oder Lacrosse-Ball unter der Wade (Gastrocnemius + Soleus), leicht hin- und herrollen, bei Triggerpunkten 20-30 Sek. halten.</p>
+      </div>
+    </div>
+    <div class="routine-step">
+      <div class="routine-num">2</div>
+      <div class="routine-body">
+        <h3>Banded Ankle Mobilization</h3>
+        <div class="routine-dose">3x10 pro Seite</div>
+        <p class="routine-desc">Widerstandsband oberhalb des Sprunggelenks von hinten befestigen, in Knee-to-Wall-Position mit dem Knie über die Zehenspitzen nach vorne drücken und zurück. Das Band zieht das Schienbein nach vorne und verbessert die Gleitfähigkeit im Gelenk.</p>
+      </div>
+    </div>
+    <div class="routine-step">
+      <div class="routine-num">3</div>
+      <div class="routine-body">
+        <h3>Belastete Knee-to-Wall-Dehnung</h3>
+        <div class="routine-dose">3x 20-30 Sek. pro Seite</div>
+        <p class="routine-desc">In Ausfallschritt-Position vor einer Wand, Knie so weit wie möglich zur Wand führen ohne dass die Ferse abhebt. An der Grenze halten, leicht nachdrücken. Gleichzeitig dein Fortschritts-Test (Knee-to-Wall-Wert).</p>
+      </div>
+    </div>
+    <div class="routine-step">
+      <div class="routine-num">4</div>
+      <div class="routine-body">
+        <h3>Eccentric Heel Drops</h3>
+        <div class="routine-dose">3x12-15 pro Bein</div>
+        <p class="routine-desc">Auf einer Stufe/Erhöhung stehen, Ferse langsam (3-4 Sek.) unter das Stufenniveau absenken, dann mit beiden Beinen wieder hoch. Verbessert Wadenlänge und Kraft in der gedehnten Position.</p>
+      </div>
+    </div>
+    <div class="routine-step">
+      <div class="routine-num">5</div>
+      <div class="routine-body">
+        <h3>Deep Squat Hold mit Fersenerhöhung</h3>
+        <div class="routine-dose">2x 30-45 Sek.</div>
+        <p class="routine-desc">Direkt im Anschluss, solange die Mobilität "aufgewärmt" ist: mit Keilen/Scheiben unter den Fersen in die tiefe Hocke setzen und entspannt halten. Fersenhöhe schrittweise reduzieren, sobald Sprunggelenk und Hüfte nachziehen.</p>
+      </div>
+    </div>
+  </div>
 
   <footer>Reset jeden Montag automatisch für die Wochenziele. Deine Daten bleiben nur auf diesem Gerät gespeichert.</footer>
   <div class="toast" id="toast"></div>
@@ -334,7 +396,14 @@ function renderAll(){
 }
 renderAll();
 
-function showToast(msg){
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  };
+});
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2200);

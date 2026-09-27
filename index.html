@@ -404,6 +404,8 @@ document.querySelectorAll('.nav-btn').forEach(btn=>{
     document.getElementById('view-'+btn.dataset.view).classList.add('active');
   };
 });
+
+function showToast(msg){
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2200);
